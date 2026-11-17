@@ -29,12 +29,13 @@ sudo dkp-pacman -Syu
 
 ## How it is updated
 
-Each source repository listed in `sources` publishes its package as a
-GitHub release when a version tag is pushed. The `Update` workflow runs
-every 30 minutes and by hand: `update.sh` signs the latest releases'
-packages that the repository does not have yet, adds them to the database
-with `dkp-repo-add`, and the workflow uploads them to the R2 bucket behind
-pkg.ouncebrew.org.
+`sources` pins the release of each package: a repository and its release
+tag. Each source repository builds its package and attaches it to the
+release when a version tag is pushed. To publish it, change that release's
+line in `sources` and push: the `Update` workflow signs the pinned packages
+that the repository does not have yet, adds them to the database with
+`dkp-repo-add`, and uploads them to the R2 bucket behind pkg.ouncebrew.org.
+Pinning an older release puts that version back.
 
 ## License
 

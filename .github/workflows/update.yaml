@@ -1,15 +1,17 @@
 # SPDX-License-Identifier: MIT
 #
-# Adds new releases' packages to the [ounce] repository at
-# https://pkg.ouncebrew.org, every 30 minutes and when it is run by hand.
+# Adds the packages of the releases that `sources` pins to the [ounce]
+# repository at https://pkg.ouncebrew.org, on a push that changes `sources`
+# or update.sh, and when it is run by hand.
 # Secrets: SIGNING_KEY (the signing key, ASCII-armored) and
 # CLOUDFLARE_API_TOKEN (R2 edit). Variables: SIGNING_KEY_FINGERPRINT,
 # CLOUDFLARE_ACCOUNT_ID.
 name: Update
 
 on:
-  schedule:
-    - cron: '*/30 * * * *'
+  push:
+    branches: [main]
+    paths: [sources, update.sh]
   workflow_dispatch:
 
 # One update at a time: each one rewrites the database.

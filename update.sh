@@ -1,14 +1,14 @@
 #!/bin/sh
 # SPDX-License-Identifier: MIT
 #
-# Adds the newest packages of the source repositories to the [ounce] pacman
+# Adds the packages of the releases that `sources` pins to the [ounce] pacman
 # repository. Runs in devkitPro's image (dkp-repo-add) with the signing key
 # imported into GnuPG:
 #   SIGNING_KEY=FINGERPRINT sh update.sh
 # It reads the repository's current database from REPO_URL and writes what
 # must be uploaded to upload/: each new package, its signature, and the
-# database and file lists with their signatures. upload/ stays empty when no
-# release is new.
+# database and file lists with their signatures. upload/ stays empty when the
+# database already has every pinned package.
 #
 # Environment:
 #   SIGNING_KEY   the signing key's fingerprint
@@ -42,11 +42,10 @@ else
     echo "No database at $REPO_URL: starting a new repository."
 fi
 
-# The packages of each source repository's latest release that the database
-# does not have yet.
-while read -r source; do
+# The packages of each pinned release that the database does not have yet.
+while read -r source version; do
     case "$source" in '' | '#'*) continue ;; esac
-    github "repos/$source/releases/latest" |
+    github "repos/$source/releases/tags/${version:?no release tag for $source}" |
         jq -r '.assets[] | select(.name | endswith(".pkg.tar.zst")) | .browser_download_url' |
     while read -r url; do
         package=$(basename "$url")
