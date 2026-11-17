@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: MIT
+#
+# Adds new releases' packages to the [ounce] repository at
+# https://pkg.ouncebrew.org, every 30 minutes and when it is run by hand.
+# Secrets: SIGNING_KEY (the signing key, ASCII-armored) and
+# CLOUDFLARE_API_TOKEN (R2 edit). Variables: SIGNING_KEY_FINGERPRINT,
+# CLOUDFLARE_ACCOUNT_ID.
+name: Update
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+# One update at a time: each one rewrites the database.
+concurrency:
+  group: update
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    name: Add new packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Sign and add the new packages
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_KEY_FINGERPRINT: ${{ vars.SIGNING_KEY_FINGERPRINT }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          docker run --rm -v "$PWD:/repo" -w /repo \
+              -e SIGNING_KEY -e SIGNING_KEY_FINGERPRINT -e GITHUB_TOKEN \
+              docker.io/devkitpro/devkita64:20260219 sh -euc '
+                  apt-get update -qq && apt-get install -y -qq curl jq > /dev/null
+                  echo "$SIGNING_KEY" | gpg --batch --import
+                  SIGNING_KEY="$SIGNING_KEY_FINGERPRINT" sh update.sh
+                  chown -R "$(stat -c %u:%g /repo)" upload'
+
+      # Packages first, then the database that lists them.
+      - name: Upload
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          cd upload
+          for file in $(ls | grep -v '^ounce\.\(db\|files\)'); do
+              npx --yes wrangler@4 r2 object put "ounce-pacman/$file" --file "$file" --remote
+          done
+          for file in $(ls | grep '^ounce\.\(db\|files\)'); do
+              npx --yes wrangler@4 r2 object put "ounce-pacman/$file" --file "$file" --remote
+          done

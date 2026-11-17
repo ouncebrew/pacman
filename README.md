@@ -10,7 +10,7 @@ Import the signing key once:
 ```sh
 curl -fsSLO https://pkg.ouncebrew.org/ounce.gpg
 sudo dkp-pacman-key --add ounce.gpg
-sudo dkp-pacman-key --lsign-key FINGERPRINT
+sudo dkp-pacman-key --lsign-key DFEAE7FA965D1E6C0D41D4D75DB9FDBFA4A4DE29
 ```
 
 Add the repository to `/opt/devkitpro/pacman/etc/pacman.conf`:
