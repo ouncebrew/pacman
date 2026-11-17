@@ -1,0 +1,3 @@
+# The repositories whose latest release's pacman packages are in [ounce].
+ouncebrew/libounce
+ouncebrew/ouncevk
