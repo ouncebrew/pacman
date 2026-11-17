@@ -1,7 +1,7 @@
 # ounce pacman repository
 
-The `[ounce]` repository for devkitPro's pacman: libounce and OunceVK, the
-Switch 2 devkit's libraries, signed, at <https://pkg.ouncebrew.org>.
+The `[ounce]` repository for devkitPro's pacman: libounce, OunceVK and
+libkaihen, the Switch 2 devkit's libraries, signed, at <https://pkg.ouncebrew.org>.
 
 ## Use
 
@@ -23,7 +23,7 @@ Server = https://pkg.ouncebrew.org
 Then install, and update as with devkitPro's own packages:
 
 ```sh
-sudo dkp-pacman -Sy libounce ouncevk
+sudo dkp-pacman -Sy libounce ouncevk libkaihen
 sudo dkp-pacman -Syu
 ```
 
