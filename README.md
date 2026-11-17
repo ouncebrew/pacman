@@ -1,7 +1,6 @@
 # ounce pacman repository
 
-The `[ounce]` repository for devkitPro's pacman: libounce, OunceVK and
-libkaihen, the Switch 2 devkit's libraries, signed, at <https://pkg.ouncebrew.org>.
+The `[ounce]` repository for devkitPro's pacman. The Switch 2 devkit's libraries signed at <https://pkg.ouncebrew.org>.
 
 ## Use
 
@@ -32,7 +31,7 @@ sudo dkp-pacman -Syu
 `sources` pins the release of each package: a repository and its release
 tag. Each source repository builds its package and attaches it to the
 release when a version tag is pushed. To publish it, change that release's
-line in `sources` and push: the `Update` workflow signs the pinned packages
+line in `sources` and push. The `Update` workflow signs the pinned packages
 that the repository does not have yet, adds them to the database with
 `dkp-repo-add`, and uploads them to the R2 bucket behind pkg.ouncebrew.org.
 Pinning an older release puts that version back.
