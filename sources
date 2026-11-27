@@ -1,6 +1,6 @@
 # The releases whose pacman packages are in [ounce]: a repository and its
 # release tag, one per line. A push that changes this file updates the
 # repository. Pinning an older release puts that version back in.
-ouncebrew/libounce 20261125
+ouncebrew/libounce 20261127
 ouncebrew/ouncevk 20261123.1
 ouncebrew/kaihen 20261123
